@@ -196,4 +196,44 @@ describe('Exchange', () => {
       })
     })
   })
+
+  describe('Order action', async () => {
+    let transaction, result
+    let amount = tokens(1)
+
+    beforeEach(async () => {
+      // User1 deposits tokens
+      transaction = await token1.connect(user1).approve(exchange.address, amount)
+      result = await transaction.wait()
+      // Deposit token
+      transaction = await exchange.connect(user1).depositToken(token1.address, amount)
+      result = await transaction.wait()
+      // Make order
+      transaction = await exchange.connect(user1).makeOrder(token2.address, amount, token1.address, amount)
+      result = await transaction.wait()
+    })
+
+    describe('Cancelling orders', async () => {
+      describe('Success', async () => {
+        beforeEach(async () => {
+          // Cancel order
+          transaction = await exchange.connect(user1).cancelOrder(1)
+          result = await transaction.wait()
+        })
+
+        it('updates cancelled orders', async () => {
+          expect(await exchange.orderCancelled(1)).to.equal(true)
+        })
+      })
+
+      describe('Failure', async () => {
+
+      })
+
+    })
+
+
+
+  })
+
 })

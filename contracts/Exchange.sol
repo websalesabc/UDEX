@@ -8,9 +8,40 @@ contract Exchange {
     address public feeAccount;
     uint256 public feePercent;
     mapping(address => mapping(address => uint256)) public tokens;
+    mapping(uint256 => _Order) public orders;
+    uint256 public orderCount; // Tratt at 0 + 1
 
-    event Deposit(address token, address user, uint256 amount, uint256 balance);
-    event Withdraw(address token, address user, uint256 amount, uint256 balance);
+    event Deposit(
+      address token,
+      address user,
+      uint256 amount,
+      uint256 balance);
+    event Withdraw(
+      address token,
+      address user,
+      uint256 amount,
+      uint256 balance);
+    event Order(
+      uint256 id,
+      address user,
+      address tokenGet,
+      uint256 amountGet,
+      address tokenGive,
+      uint256 amountGive,
+      uint256 timestamp
+    );
+
+    // A way to model the order
+    struct _Order{
+      //Attributes of ORDERS
+      uint256 id; //Unique order identifier
+      address user; //User who made order
+      address tokenGet; // addres of the token they receive
+      uint256 amountGet; // Amount they receive
+      address tokenGive; //Address of token they give
+      uint256 amountGive; //Amount they give
+      uint256 timestamp; //When order was created
+    }
 
     constructor(address _feeAccount, uint256 _feePercent) {
         feeAccount = _feeAccount;
@@ -43,8 +74,6 @@ function withdrawToken(address _token, uint256 _amount) public {
 
   //Emit event
   emit Withdraw(_token, msg.sender, _amount, tokens[_token][msg.sender]);
-
-
   }
 
   //check balances This is a wrapper function
@@ -54,6 +83,46 @@ function withdrawToken(address _token, uint256 _amount) public {
   returns (uint256)
   {
     return tokens[_token][_user];
+  }
+
+//-------------------------
+//MAKE & CANCEL ORDERS
+
+//Token Give the token they want to spender - which token and how much
+//Token Get is token they want to receive - which token and how much
+
+function makeOrder(
+  address _tokenGet,
+  uint256 _amountGet,
+  address _tokenGive,
+  uint256 _amountGive
+  ) public {
+  //Prevent orders if tokens aren't on the Exchange
+  require(balanceOf(_tokenGive, msg.sender) >= _amountGive);
+
+  // Create order
+  orderCount = orderCount + 1;
+
+  orders[orderCount] = _Order(
+      orderCount, //id
+      msg.sender, //user
+      _tokenGet,
+      _amountGet,
+      _tokenGive,
+      _amountGive,
+      block.timestamp //Timestamp
+    );
+
+    emit Order(
+      orderCount,
+      msg.sender,
+      _tokenGet,
+      _amountGet,
+      _tokenGive,
+      _amountGive,
+      block.timestamp
+    );
+
   }
 
 }

@@ -9,7 +9,7 @@ const Order = () => {
   const [price, setPrice] = useState(0)
 
   const provider = useSelector(state => state.provider.connection)
-  const tokens = useSelector(state => state.tokens.contracts   )
+  const tokens = useSelector(state => state.tokens.contracts)
   const exchange = useSelector(state => state.exchange.contract)
 
   const dispatch = useDispatch()
@@ -31,14 +31,14 @@ const Order = () => {
 
   const buyHandler = (e) => {
     e.preventDefault()
-    makeBuyOrder(provider, exchange, tokens, {amount, price}, dispatch)
+    makeBuyOrder(provider, exchange, tokens, { amount, price }, dispatch)
     setAmount(0)
     setPrice(0)
   }
 
   const sellHandler = (e) => {
     e.preventDefault()
-    makeSellOrder(provider, exchange, tokens, {amount, price}, dispatch)
+    makeSellOrder(provider, exchange, tokens, { amount, price }, dispatch)
     setAmount(0)
     setPrice(0)
   }
@@ -55,18 +55,18 @@ const Order = () => {
 
       <form onSubmit={isBuy ? buyHandler : sellHandler }>
 
-      {isBuy ? (
-        <label htmlFor="amount">Buy Amount</label>
-      ) : (
-        <label htmlFor="amount">Sell Amount</label>
-      )}
+        {isBuy ? (
+          <label htmlFor="amount">Buy Amount</label>
+        ) : (
+          <label htmlFor="amount">Sell Amount</label>
+        )}
 
         <input
-          type="text"
-          id='amount'
-          placeholder='0.0000'
-          value={amount === 0 ? '' : amount}
-          onChange={(e) => setAmount(e.target.value)}
+            type="text"
+            id='amount'
+            placeholder='0.0000'
+            value={amount === 0 ? '' : amount}
+            onChange={(e) => setAmount(e.target.value)}
         />
 
         {isBuy ? (
@@ -76,20 +76,19 @@ const Order = () => {
         )}
 
         <input
-          type="text"
-          id='price'
-          placeholder='0.0000'
-          value={price === 0 ? '' : price}
-          onChange={(e) => setPrice(e.target.value)}
+            type="text"
+            id='price'
+            placeholder='0.0000'
+            value={price === 0 ? '' : price}
+            onChange={(e) => setPrice(e.target.value)}
         />
 
         <button className='button button--filled' type='submit'>
           {isBuy ? (
-            <span>Buy Order</span>
+              <span>Buy Order</span>
           ) : (
-            <span>Sell Order</span>
+              <span>Sell Order</span>
           )}
-
         </button>
       </form>
     </div>

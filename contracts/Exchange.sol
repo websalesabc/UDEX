@@ -13,6 +13,10 @@ contract Exchange {
     mapping(uint256 => bool) public orderCancelled;
     mapping(uint256 => bool) public orderFilled;
 
+    //JB
+    address private owner;
+    //--
+
     event Deposit(
       address token,
       address user,
@@ -51,6 +55,23 @@ contract Exchange {
       address creator,
       uint256 timestamp
     );
+    //JB Start
+    event OwnerSet(
+      address indexed oldOwner,
+      address indexed newOwner
+      );
+
+    event FeeAccountChanged(
+      address indexed oldFeeAccount,
+      address indexed newFeeAccount
+      );
+
+      event FeePercentChanged(
+        uint256 indexed oldFeePercent,
+        uint256 indexed newFeePercent
+        );
+
+      //-- Stop
 
     // A way to model the order
     struct _Order{
@@ -64,10 +85,53 @@ contract Exchange {
       uint256 timestamp; //When order was created
     }
 
+    //JB start
+    modifier isOwner() {
+      require(msg.sender == owner, "Caller is not owner");
+      _;
+    }
+    //-- Stop
+
     constructor(address _feeAccount, uint256 _feePercent) {
         feeAccount = _feeAccount;
         feePercent = _feePercent;
+        //JB
+        owner = msg.sender;
+        emit OwnerSet(address(0), owner);
+        //--
     }
+
+//------------------
+//JB Change Owner
+/**
+   * @dev Change owner
+   * @param newOwner address of new owner
+   */
+  function changeOwner(address newOwner) public isOwner {
+      emit OwnerSet(owner, newOwner);
+      owner = newOwner;
+  }
+
+  /**
+   * @dev Return owner address
+   * @return address of owner
+   */
+  function getOwner() external view returns (address) {
+      return owner;
+  }
+
+//------------------
+//JB Change feeAccount
+function changeFeeAccount(address _newFeeAccount) public isOwner {
+  emit FeeAccountChanged(feeAccount, _newFeeAccount);
+  feeAccount = _newFeeAccount;
+}
+
+//JB Change feePercent
+function changeFeePercent(uint256 _newFeePercent) public isOwner {
+  emit FeePercentChanged(feePercent, _newFeePercent);
+  feePercent = _newFeePercent;
+}
 
 //------------------
 // DEPOSIT and WITHDRAW tokens

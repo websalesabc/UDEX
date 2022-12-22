@@ -1,3 +1,4 @@
+//2022-12-22 commit
 import { useSelector, useDispatch } from 'react-redux'
 import Blockies from 'react-blockies'
 
@@ -31,7 +32,7 @@ const Navbar = () => {
     <div className='exchange__header grid'>
       <div className='exchange__header--brand flex'>
         <img src={logo} className="logo" alt="DApp Logo"></img>
-        <h1>UDEX_V0.2 Exchange</h1>
+        <h1>UDEX_V0.3 Exchange</h1>
       </div>
 
       <div className='exchange__header--networks flex'>
